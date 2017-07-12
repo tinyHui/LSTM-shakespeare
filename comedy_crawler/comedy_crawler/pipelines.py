@@ -8,4 +8,15 @@
 
 class ComedyCrawlerPipeline(object):
     def process_item(self, item, spider):
-        return item
+        content = ""
+
+        head = item["head"]
+        content += f"<head>{head}</head>\n"
+
+        articles = item["article"]
+        for article in articles:
+            for k, v in article.items():
+                content += f"<{k}>{v.strip()}</{k}>\n"
+
+        with open("../data/full-text.txt", "a") as f:
+            f.write(content)
