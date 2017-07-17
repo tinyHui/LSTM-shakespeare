@@ -16,7 +16,8 @@ class ComedyCrawlerPipeline(object):
         articles = item["article"]
         for article in articles:
             for k, v in article.items():
-                content += f"<{k}>{v.strip()}</{k}>\n"
+                if k != "table":
+                    content += f"<{k}> {v.strip()} </{k}>\n"
 
         with open("../data/full-text.txt", "a") as f:
             f.write(content)
