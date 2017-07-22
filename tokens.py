@@ -18,7 +18,7 @@ def get_lines():
             sys.stdout.write(f"\b\rProcessing: {count}")
             count += 1
 
-            yield filter(lambda x: x.strip() != "", re.findall(r"\w+|[^a-z0-9]", line.lower()))
+            yield line.split()
 
 
 if __name__ == '__main__':
@@ -32,6 +32,7 @@ if __name__ == '__main__':
 
     for tokens in get_lines():
         for token in tokens:
+            token_set.append(token)
             if re.match("^[a-z0-9]+$", token):
                 length += 1
                 sentence.append(token)
@@ -42,8 +43,6 @@ if __name__ == '__main__':
 
                 sentence = []
                 length = 0
-
-            token_set.append(token)
 
     token_set = set(token_set)
     print("\ntoken number:", len(token_set))
