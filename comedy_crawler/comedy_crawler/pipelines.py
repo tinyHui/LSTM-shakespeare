@@ -11,7 +11,7 @@ class ComedyCrawlerPipeline(object):
         content = ""
 
         head = item["head"]
-        content += f"<head>{head}</head>\n"
+        content += f"<head> {head} </head>\n"
 
         articles = item["article"]
         for article in articles:
