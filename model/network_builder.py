@@ -34,7 +34,7 @@ def dense(inputs):
 
 
 def build_network():
-    input_placeholder = tf.placeholder(tf.int16, shape=(BATCH_SIZE, MAX_LENGTH))
+    input_placeholder = tf.placeholder(tf.int32, shape=(BATCH_SIZE, MAX_LENGTH))
     input_embedding = embedding_layer(input_placeholder)
 
     outputs, last_state = rnn(input_embedding)
@@ -42,3 +42,9 @@ def build_network():
 
     one_hot = tf.one_hot(tf.reshape(output, [-1]), depth=TOKEN_NUMBER + 1)
     return input_placeholder, one_hot
+
+
+def get_train_step(output_data):
+    y = tf.placeholder(tf.int8, shape=(BATCH_SIZE, TOKEN_NUMBER))
+    cost = tf.reduce_mean(tf.square(y - output_data))
+    return y, tf.train.AdamOptimizer(1e-6).minimize(cost)
