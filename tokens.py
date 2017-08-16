@@ -3,7 +3,7 @@ import sys
 import re
 
 
-COMEDY_FULL_TEXT = "./data/full-text.txt"
+COMEDY_FULL_TEXT = "./data/partial-text.txt"
 
 
 def get_lines():

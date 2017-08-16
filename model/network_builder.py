@@ -1,10 +1,10 @@
 import tensorflow as tf
-from utils.config import *
+from utils.config import SENTENCE_LENGTH, EMBEDDING_SIZE, TOKEN_NUMBER, OUTPUT_KEEP_PROB, BATCH_SIZE, LEARNING_RATE
 
 
 def embedding_layer(input_placeholder):
-    embedding = tf.get_variable("embedding",
-                                initializer=tf.random_uniform([BATCH_SIZE, TOKEN_NUMBER + 1, EMBEDDING_SIZE], -1.0, 1.0))
+    embedding = tf.get_variable(initializer=tf.random_uniform((TOKEN_NUMBER, EMBEDDING_SIZE), -1.0, 1.0),
+                                name="embedding")
     return tf.nn.embedding_lookup(embedding, input_placeholder)
 
 
@@ -28,23 +28,26 @@ def bias_variable(shape):
 
 
 def dense(inputs):
-    weights = weight_variable((EMBEDDING_SIZE, TOKEN_NUMBER + 1))
-    bias = bias_variable((TOKEN_NUMBER + 1,))
+    weights = weight_variable((EMBEDDING_SIZE, TOKEN_NUMBER))
+    bias = bias_variable((TOKEN_NUMBER,))
     return tf.nn.bias_add(tf.matmul(inputs, weights), bias=bias)
 
 
 def build_network():
-    input_placeholder = tf.placeholder(tf.int32, shape=(BATCH_SIZE, MAX_LENGTH))
-    input_embedding = embedding_layer(input_placeholder)
+    inputs = tf.placeholder(tf.int32, shape=(BATCH_SIZE, SENTENCE_LENGTH))
+    embedding = embedding_layer(inputs)
 
-    outputs, last_state = rnn(input_embedding)
-    output = dense(tf.reshape(outputs, [-1, EMBEDDING_SIZE]))
+    rnn_layer, last_state = rnn(embedding)
+    flatten = tf.reshape(rnn_layer, [-1, EMBEDDING_SIZE])
 
-    one_hot = tf.one_hot(tf.reshape(output, [-1]), depth=TOKEN_NUMBER + 1)
-    return input_placeholder, one_hot
+    logits = dense(flatten)
 
+    expect_tokens = tf.placeholder(tf.int32, shape=(BATCH_SIZE, SENTENCE_LENGTH))
+    labels = tf.one_hot(tf.reshape(expect_tokens, [-1, 1]), depth=TOKEN_NUMBER)
 
-def get_train_step(output_data):
-    y = tf.placeholder(tf.int8, shape=(BATCH_SIZE, TOKEN_NUMBER))
-    cost = tf.reduce_mean(tf.square(y - output_data))
-    return y, tf.train.AdamOptimizer(1e-6).minimize(cost)
+    loss = tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits)
+    total_loss = tf.reduce_mean(loss)
+
+    tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(total_loss)
+
+    return inputs, expect_tokens, total_loss
