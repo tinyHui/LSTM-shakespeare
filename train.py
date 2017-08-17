@@ -2,6 +2,7 @@ from model import Generator, build_network
 import tensorflow as tf
 import logging
 
+from utils.config import COMEDY_FULL_TEXT, BATCH_SIZE, SENTENCE_LENGTH
 
 logging.basicConfig(format="%(levelname)s | %(asctime)s - %(message)s",
                     level=logging.DEBUG)
@@ -12,9 +13,7 @@ def train():
 
     sess.run(tf.global_variables_initializer())
 
-    # saver = tf.train.Saver()
-    # checkpoint = tf.train.get_checkpoint_state(CHECKOUT_FOLDER)
-    generator = Generator()
+    generator = Generator(COMEDY_FULL_TEXT, BATCH_SIZE, SENTENCE_LENGTH)
     epoch = 1
     while generator.have_next():
         sentences = generator.next_batch()
@@ -25,7 +24,7 @@ def train():
             expect_tokens: following_tokens
         })
 
-        logging.info(f"Processed epoch: {epoch + 1} | loss: {loss_value}")
+        logging.info(f"Processed epoch: {epoch} | loss: {loss_value}")
         epoch += 1
 
 

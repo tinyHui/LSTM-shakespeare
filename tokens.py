@@ -2,8 +2,7 @@ import pickle as pkl
 import sys
 import re
 
-
-COMEDY_FULL_TEXT = "./data/partial-text.txt"
+from utils.config import COMEDY_FULL_TEXT
 
 
 def get_lines():
@@ -18,7 +17,12 @@ def get_lines():
             sys.stdout.write(f"\b\rProcessing: {count}")
             count += 1
 
-            yield line.split()
+            yield get_tokens(line)
+
+
+def get_tokens(line):
+    tokens = re.findall(r"</?[a-z]+>|[a-zA-Z]+\'[a-zA-Z]*|[a-zA-Z]+|[0-9]+|[.,;\[\]!?:]+|\'", line)
+    return list(map(lambda x: x.strip(), filter(lambda x: x.strip(), tokens)))
 
 
 if __name__ == '__main__':
@@ -31,18 +35,14 @@ if __name__ == '__main__':
     sentence = []
 
     for tokens in get_lines():
-        for token in tokens:
-            token_set.append(token)
-            if re.match("^[a-z0-9]+$", token):
-                length += 1
-                sentence.append(token)
-            else:
-                if length > max_length:
-                    max_length = length
-                    max_length_sentence = sentence
-
-                sentence = []
-                length = 0
+        token_set += tokens
+        sentence += tokens
+        length += len(tokens)
+        if length > max_length:
+            max_length = length
+            max_length_sentence = sentence
+            length = 0
+            sentence = []
 
     token_set = set(token_set)
     print("\ntoken number:", len(token_set))
