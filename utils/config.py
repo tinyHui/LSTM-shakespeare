@@ -10,3 +10,8 @@ EMBEDDING_SIZE = 128
 SENTENCE_LENGTH = 30
 OUTPUT_KEEP_PROB = 0.5
 LEARNING_RATE = 0.3
+
+
+class Mode:
+    TRAIN = 'train'
+    PREDICT = 'predict'

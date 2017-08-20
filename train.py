@@ -3,7 +3,7 @@ import tensorflow as tf
 import logging
 import os
 
-from utils.config import COMEDY_FULL_TEXT, BATCH_SIZE, SENTENCE_LENGTH
+from utils.config import COMEDY_FULL_TEXT, BATCH_SIZE, SENTENCE_LENGTH, Mode
 
 tf.app.flags.DEFINE_string('checkpoints_dir', os.path.abspath('./checkpoints/'), 'checkpoints save path.')
 tf.app.flags.DEFINE_string('model_prefix', 'shakespeare', 'model save prefix.')
@@ -16,7 +16,7 @@ EPOCH = 100
 
 
 def train():
-    inputs, expect_tokens, last_state, loss, train_op = build_network()
+    inputs, expect_tokens, last_state, loss, train_op = build_network(mode=Mode.TRAIN)
 
     sess.run(tf.group(tf.global_variables_initializer(), tf.local_variables_initializer()))
 
