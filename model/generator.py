@@ -52,6 +52,12 @@ class Generator:
             logging.info("Reached the end of the document")
             return False
 
+    def get_iter_count(self):
+        return self.__iter_count
+
+    def reset_iterator(self):
+        self.__iter_count = 1
+
     def __get_tokens(self, start_index, end_index):
         current_batch = [self.full_tokens[start_index:end_index][i:i + self.SENTENCE_LENGTH]
                          for i in range(0, self.BATCH_SIZE * self.SENTENCE_LENGTH, self.SENTENCE_LENGTH)]
