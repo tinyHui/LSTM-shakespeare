@@ -8,7 +8,6 @@ from utils.config import COMEDY_FULL_TEXT
 def get_lines():
     count = 1
     with open(COMEDY_FULL_TEXT, 'r') as f:
-        print()
         while True:
             line = f.readline()
             if not line:

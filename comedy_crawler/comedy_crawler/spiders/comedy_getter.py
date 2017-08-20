@@ -28,7 +28,6 @@ class ComedyGetterSpider(scrapy.Spider):
             if text.strip():
                 article.append(text)
 
-        print(article)
         yield {
             "article": article
         }
