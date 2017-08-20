@@ -27,7 +27,7 @@ class Generator:
         self.BATCH_SIZE = batch_size
         self.SENTENCE_LENGTH = sentence_length
 
-        self.chunk_n = self.sentences_n // (self.BATCH_SIZE * self.SENTENCE_LENGTH) - 1
+        self.chunk_n = self.sentences_n // (self.BATCH_SIZE * self.SENTENCE_LENGTH)
         logging.info(f"Able to get {self.chunk_n} chunks")
 
     def next_batch(self):
@@ -45,7 +45,7 @@ class Generator:
         return np.asarray(current_batch)
 
     def have_next(self):
-        has_next = self.__iter_count <= self.chunk_n
+        has_next = self.__iter_count < self.chunk_n
         if has_next:
             return True
         else:

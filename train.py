@@ -11,7 +11,7 @@ EPOCH = 100
 
 
 def train():
-    inputs, expect_tokens, loss = build_network()
+    inputs, expect_tokens, last_state, loss, train_op = build_network()
 
     sess.run(tf.group(tf.global_variables_initializer(), tf.local_variables_initializer()))
 
@@ -22,7 +22,7 @@ def train():
             sentences = generator.next_batch()
             following_tokens = generator.following_tokens()
 
-            loss_value = sess.run(loss, feed_dict={
+            loss_value, _, _ = sess.run([loss, last_state, train_op], feed_dict={
                 inputs: sentences,
                 expect_tokens: following_tokens
             })

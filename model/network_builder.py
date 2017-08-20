@@ -48,6 +48,6 @@ def build_network():
     loss = tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits)
     total_loss = tf.reduce_mean(loss)
 
-    tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(total_loss)
+    train_op = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(total_loss)
 
-    return inputs, expect_tokens, total_loss
+    return inputs, expect_tokens, last_state, total_loss, train_op
